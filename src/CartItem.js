@@ -1,19 +1,6 @@
 import React from "react";
 
 class CartItem extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      price: 999,
-      title: "Phone",
-      qty: 1,
-      img: "",
-      number: 1,
-    };
-    // this.increaseQuantity = this.increaseQuantity.bind(this);
-    // this.testing();
-  }
-
   increaseQuantity = () => {
     // this.state.qty += 1; Directly mutating state, never recommended
     // console.log(this.state);
@@ -40,7 +27,7 @@ class CartItem extends React.Component {
         };
       },
       () => {
-        console.log(this.state);
+        // console.log(this.state);
       }
     );
     // In this case if it is called multiple times then React will maintain a queue
@@ -92,7 +79,8 @@ class CartItem extends React.Component {
   }
 
   render() {
-    const { price, title, qty } = this.state;
+    console.log(this.props);
+    const { price, title, qty } = this.props.product;
     return (
       <div className="cart-item">
         <div className="left-block">
