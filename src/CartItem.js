@@ -8,25 +8,89 @@ class CartItem extends React.Component {
       title: "Phone",
       qty: 1,
       img: "",
+      number: 1,
     };
     // this.increaseQuantity = this.increaseQuantity.bind(this);
+    // this.testing();
   }
+
   increaseQuantity = () => {
     // this.state.qty += 1; Directly mutating state, never recommended
     // console.log(this.state);
 
     // setState form 1
+    // this.setState(
+    //   {
+    //     qty: this.state.qty + 1,
+    //   },
+    //   () => {
+    //     console.log(this.state);
+    //   }
+    // );
+    // In an event handler no matter how many times you call the setState function
+    // React will merge the multiple setState calls into one setState call,
+    // so component is rendered only once. Only last call will be taken.
+    // Merging of all setState calls into one shallow leap is called Batching.
+
+    // setState form 2, shallow merging both - if prevState required, use this
+    this.setState(
+      (prevState) => {
+        return {
+          qty: prevState.qty + 1,
+        };
+      },
+      () => {
+        console.log(this.state);
+      }
+    );
+    // In this case if it is called multiple times then React will maintain a queue
+    // and these callbacks will be passed into the queue. PrevState will be upto date
+    // for the call of each callback
+    // This setState call is asynchronous. So on console.log(setState), it will be updated
+    // but previous call will be printed. To run it synchronously one can pass a callback
+    // to the setState function
+  };
+
+  decreaseQuantity = () => {
+    const { qty } = this.state;
+    if (qty === 0) {
+      return;
+    }
+    // this.state.qty -= 1; Directly mutating state, never recommended
+    // console.log(this.state);
+
+    // setState form 1
     // this.setState({
-    //   qty: this.state.qty + 1,
+    //   qty: this.state.qty - 1,
     // });
 
     // setState form 2, shallow merging both - if prevState required, use this
     this.setState((prevState) => {
       return {
-        qty: prevState.qty + 1,
+        qty: prevState.qty - 1,
       };
     });
   };
+
+  // setState calls are asynchronous in case of react event handlers. But in case of
+  // AJAX calls and making promises, setState call is synchronous.
+  testing() {
+    const promise = new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve("done");
+      }, 5000);
+    });
+
+    promise.then(() => {
+      this.setState({ qty: this.state.qty + 1 });
+      // this.setState({ qty: this.state.qty + 1 });
+      // this.setState({ qty: this.state.qty + 1 });
+      // if this is done then component will be rerendered thrice as it is a synchronous call.
+      // Works similar to prevSate
+      console.log("state", this.state);
+    });
+  }
+
   render() {
     const { price, title, qty } = this.state;
     return (
@@ -52,6 +116,7 @@ class CartItem extends React.Component {
               alt="decrease"
               className="action-icons"
               src="https://cdn-icons-png.flaticon.com/512/992/992683.png"
+              onClick={this.decreaseQuantity}
             />
             <img
               alt="delete"
